@@ -1,5 +1,7 @@
+//On définit la méthode utilitaire pour traviller avec la chaine de requêtes
 const urlParams = new URLSearchParams(window.location.search);
 // On prend l'id de la page du kanap
+// On fait une demande get qui retourne la première valeur associé
 const id = urlParams.get('_id');
 console.log(id);
 // On prend le contenu de l'API en format JSON
@@ -25,6 +27,10 @@ function lesKanaps(kanap) {
 
   const { altTxt, colors, description, imageUrl, name, price, id } = kanap;
   makeImage(imageUrl, altTxt);
+  makeTitle(name);
+  makePrice(price);
+  makeDescription(description);
+  makeColors(colors);
 }
 
 function makeImage(imageUrl, altTxt) {
@@ -33,5 +39,25 @@ function makeImage(imageUrl, altTxt) {
   image.alt = altTxt;
   const parent = document.querySelector('.item__img');
   parent.appendChild(image);
-  return image;
+}
+function makeTitle(name) {
+  document.querySelector('#title').textContent = name;
+}
+
+function makePrice(price) {
+  document.querySelector('#price').textContent = price;
+}
+
+function makeDescription(description) {
+  document.querySelector('#description').textContent = description;
+}
+
+function makeColors(colors) {
+  const colorPlace = document.querySelector('#colors');
+  colors.forEach((color) => {
+    const option = document.createElement('option');
+    option.value = color;
+    option.textContent = color;
+    colorPlace.appendChild(option);
+  });
 }
