@@ -7,9 +7,8 @@ fetch(url)
 
   // On prend les éléments dans un tableau
   .then((objetProduits) => {
-    console.table(objetProduits);
+    // On appel la function kanap avec comme paramètre objetProduits
     lesKanaps(objetProduits);
-    console.log(objetProduits);
   })
   // On définit une action si il y a une erreur avec l'API
   .catch((err) => {
@@ -25,9 +24,12 @@ function lesKanaps(index) {
 
   /* On déclare la boucle avec la variable article du paramètre index qui ajoute 
   dans le html les produits*/
+  // on déclare article de l'index qui est le paramètre de lesKanaps
   for (let article of index) {
+    // On ajoute dans la zoneArticle le contenu des kanaps
+
     zoneArticle.innerHTML += `<a href="./product.html?_id=${article._id}">
-    <article>
+    <article> 
     <img src="${article.imageUrl}" alt="${article.altTxt}">
     <h3 class="productName">${article.name}</h3>
     <p class="productDescription">${article.description}</p>
