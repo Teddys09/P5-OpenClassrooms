@@ -5,7 +5,7 @@ const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get('_id');
 // On définit les variables globale pour les utiliser plus tard
 let kanapPrice = 0;
-let imgUrl, altText;
+let imgUrl, altText, articleName;
 // On prend le contenu de l'API en format JSON
 fetch(`http://localhost:3000/api/products/${id}`)
   .then((res) => res.json())
@@ -37,6 +37,7 @@ function lesKanaps(kanap) {
   kanapPrice = price;
   imgUrl = imageUrl;
   altText = altTxt;
+  articleName = name;
   makeImage(imageUrl, altTxt);
   makeTitle(name);
   makePrice(price);
@@ -89,6 +90,7 @@ button.addEventListener('click', (e) => {
     price: kanapPrice,
     imageUrl: imgUrl,
     altTxt: altText,
+    name: articleName,
   };
   localStorage.setItem(id, JSON.stringify(storage));
   window.location.href = 'cart.html';
