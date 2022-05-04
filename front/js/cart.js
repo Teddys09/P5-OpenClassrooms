@@ -28,6 +28,32 @@ function displayItem(item) {
   const cardItemContent = makeCartContent(item);
 
   article.appendChild(cardItemContent);
+  displayTotalQuantity(item);
+  displayTotalPrice(item);
+}
+
+function displayTotalQuantity(item) {
+  const totalQuantity = document.querySelector('#totalQuantity');
+  let total = 0;
+  totalQuantity.textContent = item.quantity;
+  cart.forEach((kanap) => {
+    const totalUnitQuantity = total + kanap.quantity;
+
+    total = totalUnitQuantity;
+
+    totalQuantity.textContent = total;
+  });
+}
+
+function displayTotalPrice(item) {
+  const totalPrice = document.querySelector('#totalPrice');
+  let total = 0;
+  totalPrice.textContent = item.quantity;
+  cart.forEach((kanap) => {
+    const totalUnitPrice = kanap.price * kanap.quantity;
+    total += totalUnitPrice;
+    totalPrice.textContent = total;
+  });
 }
 
 function makeCartContent(item) {
@@ -44,7 +70,17 @@ function makeSettings(item) {
   const settings = document.createElement('div');
   settings.classList.add('cart__item__content__settings');
   addQuantityToSettings(settings, item);
+  addDeleteToSettings(settings);
   return settings;
+}
+
+function addDeleteToSettings(settings) {
+  const div = document.createElement('div');
+  div.classList.add('cart__item__content__settings__delete');
+  const p = document.createElement('p');
+  p.textContent = 'Supprimer';
+  div.appendChild(p);
+  settings.appendChild(div);
 }
 
 function addQuantityToSettings(settings, item) {
@@ -60,7 +96,17 @@ function addQuantityToSettings(settings, item) {
   input.min = '1';
   input.max = '100';
   input.value = item.quantity;
-  settings.appendChild(input);
+  input.addEventListener('input', () =>
+    updatePriceAndQuantity(item.id, input.value)
+  );
+  quantity.appendChild(input);
+  settings.appendChild(quantity);
+}
+function updatePriceAndQuantity(id, newValue) {
+  const itemToUpdate = cart.find((item) => item.id === id);
+  itemToUpdate.quantity = Number(newValue);
+  displayTotalQuantity(newValue);
+  displayTotalPrice(newValue);
 }
 
 function makeDescription(item) {
