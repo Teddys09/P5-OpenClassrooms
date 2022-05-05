@@ -205,6 +205,7 @@ function submitForm(e) {
   })
     .then((res) => res.json())
     .then((data) => {
+      console.log(data);
       const orderId = data.orderId;
       window.location.href =
         '/P5-Dev-Web-Kanap/front/html/confirmation.html' +
@@ -263,6 +264,6 @@ function getIdFromCache() {
     const key = localStorage.key(i);
     const id = key.split('-')[0];
     ids.push(id);
-    return id;
+    return ids;
   }
 }
