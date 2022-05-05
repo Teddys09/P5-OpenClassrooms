@@ -83,6 +83,7 @@ button.addEventListener('click', (e) => {
     alert('Selectionner une couleur et une quantité ');
     return;
   }
+  const key = `${id}-${color}`;
   const storage = {
     id: id,
     color: color,
@@ -92,6 +93,6 @@ button.addEventListener('click', (e) => {
     altTxt: altText,
     name: articleName,
   };
-  localStorage.setItem(id, JSON.stringify(storage));
+  localStorage.setItem(key, JSON.stringify(storage));
   window.location.href = 'cart.html';
 });

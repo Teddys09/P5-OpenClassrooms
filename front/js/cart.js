@@ -12,8 +12,10 @@ function takeItemFromCache() {
   const numberOfItems = localStorage.length;
   for (let i = 0; i < numberOfItems; i++) {
     const item = localStorage.getItem(localStorage.key(i));
+
     //JSON.parse est pour transformer en objet à l'inverse de .stringify
     const itemKanap = JSON.parse(item);
+
     cart.push(itemKanap);
   }
 }
@@ -70,19 +72,42 @@ function makeSettings(item) {
   const settings = document.createElement('div');
   settings.classList.add('cart__item__content__settings');
   addQuantityToSettings(settings, item);
-  addDeleteToSettings(settings);
+  addDeleteToSettings(settings, item);
   return settings;
 }
 
-function addDeleteToSettings(settings) {
+function addDeleteToSettings(settings, item) {
   const div = document.createElement('div');
   div.classList.add('cart__item__content__settings__delete');
+  div.addEventListener('click', () => deleteItem(item));
   const p = document.createElement('p');
   p.textContent = 'Supprimer';
   div.appendChild(p);
   settings.appendChild(div);
 }
 
+function deleteItem(item) {
+  const itemToDelete = cart.findIndex(
+    (kanap) => kanap.id === item.id && kanap.color === item.color
+  );
+  cart.splice(itemToDelete, 1);
+  displayTotalPrice(item);
+  displayTotalQuantity(item);
+  deleteDataFromCache(item);
+  deleteArticleFromPage(item);
+}
+
+function deleteArticleFromPage(item) {
+  const articleToDelete = document.querySelector(
+    `article[data-id="${item.id}"][data-color="${item.color}"]`
+  );
+  articleToDelete.remove(item);
+}
+
+function deleteDataFromCache(item) {
+  const key = `${item.id}-${item.color}`;
+  localStorage.removeItem(key);
+}
 function addQuantityToSettings(settings, item) {
   const quantity = document.createElement('div');
   quantity.classList.add('cart__item__content__settings__quantity');
@@ -105,6 +130,7 @@ function addQuantityToSettings(settings, item) {
 function updatePriceAndQuantity(id, newValue, item) {
   const itemToUpdate = cart.find((item) => item.id === id);
   itemToUpdate.quantity = Number(newValue);
+  item.quantity = itemToUpdate.quantity;
   displayTotalQuantity(newValue);
   displayTotalPrice(newValue);
   saveNewDataToCache(item);
@@ -112,7 +138,8 @@ function updatePriceAndQuantity(id, newValue, item) {
 
 function saveNewDataToCache(item) {
   const data = JSON.stringify(item);
-  localStorage.setItem(item.id, data);
+  const key = `${item.id}-${item.color}`;
+  localStorage.setItem(key, data);
 }
 
 function makeDescription(item) {
