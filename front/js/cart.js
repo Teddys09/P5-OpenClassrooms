@@ -180,3 +180,89 @@ function makeImageDiv(item) {
   div.appendChild(image);
   return div;
 }
+
+//FORMULAIRE
+
+const orderButton = document.querySelector('#order');
+orderButton.addEventListener('click', (e) => submitForm(e));
+
+function submitForm(e) {
+  e.preventDefault();
+  if (cart.length === 0) {
+    alert('You need to purchase item ');
+    return;
+  }
+  if (valideFrom()) return;
+  if (isEmailValide()) return;
+
+  const body = makeRequestBody();
+  fetch('http://localhost:3000/api/products/order', {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      const orderId = data.orderId;
+      window.location.href =
+        '/P5-Dev-Web-Kanap/front/html/confirmation.html' +
+        '?orderId=' +
+        orderId;
+    })
+    .catch((err) => console.error(err));
+}
+
+function valideFrom() {
+  const form = document.querySelector('.cart__order__form');
+  const inputs = form.querySelectorAll('input');
+  inputs.forEach((input) => {
+    if (input.value === '') {
+      alert('Veuillez remplir tout les champs du formulaire !');
+      return true;
+    }
+    return false;
+  });
+}
+
+function isEmailValide() {
+  const email = document.querySelector('#email').value;
+  const regx = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
+  if (regx.test(email) === false) {
+    alert('Veuiller entré une adresse mail valide !');
+    return true;
+  }
+  return false;
+}
+
+function makeRequestBody() {
+  const form = document.querySelector('.cart__order__form');
+  const firstName = form.elements.firstName.value;
+  const lastName = form.elements.lastName.value;
+  const address = form.elements.address.value;
+  const city = form.elements.city.value;
+  const email = form.elements.email.value;
+  const body = {
+    contact: {
+      firstName: firstName,
+      lastName: lastName,
+      address: address,
+      city: city,
+      email: email,
+    },
+    products: getIdFromCache(),
+  };
+  return body;
+}
+
+function getIdFromCache() {
+  const numberOfProducts = localStorage.length;
+  const ids = [];
+  for (let i = 0; i < numberOfProducts; i++) {
+    const key = localStorage.key(i);
+    const id = key.split('-')[0];
+    ids.push(id);
+    return id;
+  }
+}
