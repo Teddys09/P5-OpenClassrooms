@@ -74,8 +74,9 @@ function makeColors(colors) {
     colorPlace.appendChild(option);
   });
 }
-
+// On sélectionne l'id addToCart
 const button = document.querySelector('#addToCart');
+// On écoute le click sur le bouton / si la couleur ou la quantité est null une alert pop
 button.addEventListener('click', (e) => {
   const color = document.querySelector('#colors').value;
   const quantity = document.querySelector('#quantity').value;
@@ -83,7 +84,9 @@ button.addEventListener('click', (e) => {
     alert('Selectionner une couleur et une quantité ');
     return;
   }
+
   const key = `${id}-${color}`;
+  // définition const storage qui stock tout le contenu nécessaire
   const storage = {
     id: id,
     color: color,
@@ -93,6 +96,8 @@ button.addEventListener('click', (e) => {
     altTxt: altText,
     name: articleName,
   };
+  // On met dans le localStorage la const key + on transforme en string json les élem du storage
   localStorage.setItem(key, JSON.stringify(storage));
+  //ça nous redirige sur le panier après le click
   window.location.href = 'cart.html';
 });

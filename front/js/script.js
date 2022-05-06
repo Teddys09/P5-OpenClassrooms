@@ -26,7 +26,7 @@ function lesKanaps(index) {
   dans le html les produits*/
   // on déclare article de l'index qui est le paramètre de lesKanaps
   for (let article of index) {
-    // On ajoute dans la zoneArticle le contenu des kanaps
+    // On ajoute dans la zoneArticle + le contenu des kanaps
 
     zoneArticle.innerHTML += `<a href="./product.html?_id=${article._id}">
     <article> 

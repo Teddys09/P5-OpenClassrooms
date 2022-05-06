@@ -15,11 +15,11 @@ function takeItemFromCache() {
 
     //JSON.parse est pour transformer en objet à l'inverse de .stringify
     const itemKanap = JSON.parse(item);
-
+    // On envoie les éléments dans le tbleau cart
     cart.push(itemKanap);
   }
 }
-
+// Function qui appel nos function constructrice
 function displayItem(item) {
   const article = makeArticle(item);
   displayArticle(article);
@@ -34,6 +34,8 @@ function displayItem(item) {
   displayTotalPrice(item);
 }
 
+// Function qui calcul la quantity total de produit et l'affiche en html
+
 function displayTotalQuantity(item) {
   const totalQuantity = document.querySelector('#totalQuantity');
   let total = 0;
@@ -47,6 +49,8 @@ function displayTotalQuantity(item) {
   });
 }
 
+//Function qui calcul le prix total de produit et l'affiche en html
+
 function displayTotalPrice(item) {
   const totalPrice = document.querySelector('#totalPrice');
   let total = 0;
@@ -58,6 +62,10 @@ function displayTotalPrice(item) {
   });
 }
 
+/*Fabrique une div avec la class voulue puis appel les function 
+constructice description et settings pour les appends child
+ */
+
 function makeCartContent(item) {
   const cardItemContent = document.createElement('div');
   cardItemContent.classList.add('cart__item__content');
@@ -68,6 +76,9 @@ function makeCartContent(item) {
   cardItemContent.appendChild(settings);
   return cardItemContent;
 }
+
+//Fabrique une div avec la classe voulue + appel les function souhaité
+
 function makeSettings(item) {
   const settings = document.createElement('div');
   settings.classList.add('cart__item__content__settings');
@@ -75,6 +86,10 @@ function makeSettings(item) {
   addDeleteToSettings(settings, item);
   return settings;
 }
+
+/* Fabrique une div avec la classe souhaitée puis écoute le click et 
+lance la function deleteItem ensuite fabrique un paragraphe puis rend
+ le p enfant de div et div enfant de settings */
 
 function addDeleteToSettings(settings, item) {
   const div = document.createElement('div');
@@ -85,6 +100,8 @@ function addDeleteToSettings(settings, item) {
   div.appendChild(p);
   settings.appendChild(div);
 }
+
+// définit l'item à delete et appel les function voulu
 
 function deleteItem(item) {
   const itemToDelete = cart.findIndex(
@@ -97,6 +114,8 @@ function deleteItem(item) {
   deleteArticleFromPage(item);
 }
 
+//sélectionne l'article avec la bonne id et couleur puis la supprime
+
 function deleteArticleFromPage(item) {
   const articleToDelete = document.querySelector(
     `article[data-id="${item.id}"][data-color="${item.color}"]`
@@ -104,10 +123,22 @@ function deleteArticleFromPage(item) {
   articleToDelete.remove(item);
 }
 
+//sélectionne dans le cache un item avec la bonne id et couleur puis le supprime
+
 function deleteDataFromCache(item) {
   const key = `${item.id}-${item.color}`;
   localStorage.removeItem(key);
 }
+
+/* Fabrique une div avec la classe voulu  puis un p contenant "Qté"
+ et le rend enfant de quantité 
+  Puis fabrique un inpu  de type number avec la classe souhaité
+  puis le nom souhaité puis les valeurs min et max souhaité
+  et sa valur est égal à item.quantity
+  Puis on écoute l'input et on lance la function updatePriceAndQuantity
+  Puis input devient enfant de quantity 
+  Et quantity devient enfant de settings  */
+
 function addQuantityToSettings(settings, item) {
   const quantity = document.createElement('div');
   quantity.classList.add('cart__item__content__settings__quantity');
@@ -127,6 +158,11 @@ function addQuantityToSettings(settings, item) {
   quantity.appendChild(input);
   settings.appendChild(quantity);
 }
+
+/* on va chercher dan le tableau item avec l'id voulu 
+Puis on met à jour la nouvelle valeur en nombre 
+Et on lance les function avec les nouvelles valeur plus la save  */
+
 function updatePriceAndQuantity(id, newValue, item) {
   const itemToUpdate = cart.find((item) => item.id === id);
   itemToUpdate.quantity = Number(newValue);
@@ -136,11 +172,19 @@ function updatePriceAndQuantity(id, newValue, item) {
   saveNewDataToCache(item);
 }
 
+/* On prend les item en string + l'id et la color et on les places
+ dans le local storage */
+
 function saveNewDataToCache(item) {
   const data = JSON.stringify(item);
   const key = `${item.id}-${item.color}`;
   localStorage.setItem(key, data);
 }
+
+/*Fabrique une div avec la classe souhaitée
+Puis fabrique un h2 contenant le name 
+Puis un p contenant color puis un p2 contenant le prix
+Et on les rends enfant de description (la div) */
 
 function makeDescription(item) {
   const description = document.createElement('div');
@@ -159,6 +203,10 @@ function makeDescription(item) {
   return description;
 }
 
+/*Fabrique un article puis lui ajoute la classe voulu
+Puis l'article contenant l'id et la color dans le dom sont égal à
+item.id et item.color */
+
 function makeArticle(item) {
   const article = document.createElement('article');
   article.classList.add('card__item');
@@ -167,9 +215,16 @@ function makeArticle(item) {
   return article;
 }
 
+//sélectionne l'id voulu puis lui donne en enfant article
+
 function displayArticle(article) {
   document.querySelector('#cart__items').appendChild(article);
 }
+
+/*Fabrique une div avec la class voulu puis fabrique une img 
+puis image.src et image.alt prenne item.imageUrl et item.alTxt
+et rend image enfant de div
+ */
 
 function makeImageDiv(item) {
   const div = document.createElement('div');
@@ -183,8 +238,17 @@ function makeImageDiv(item) {
 
 //FORMULAIRE
 
+/*Sélectionne l'id order puis écoute au click et lance la function submit
+ */
 const orderButton = document.querySelector('#order');
 orderButton.addEventListener('click', (e) => submitForm(e));
+
+/*Prend en paramètre l'event écouté puis lui stop son 
+utilisation par défaut
+Si la longueur du tableau vaut 0 alors une alert apparait
+si function validFrom tu la return
+si function isEmailValid tu la return
+ */
 
 function submitForm(e) {
   e.preventDefault();
@@ -195,7 +259,11 @@ function submitForm(e) {
   if (valideFrom()) return;
   if (isEmailValide()) return;
 
+  // On appel la function
   const body = makeRequestBody();
+  /* Requete fetch a l'api/order avec la method POST + tout les 
+  prérequis demandé par l'API
+  */
   fetch('http://localhost:3000/api/products/order', {
     method: 'POST',
     body: JSON.stringify(body),
@@ -203,6 +271,9 @@ function submitForm(e) {
       'Content-Type': 'application/json',
     },
   })
+    /* Prend la réponse de la requête puis la passe ne JSON
+  Puis on défini la const qui = data.orderId
+  Qui permet d'envoyer vers la page confirm avec le bon id de commande */
     .then((res) => res.json())
     .then((data) => {
       console.log(data);
@@ -214,6 +285,11 @@ function submitForm(e) {
     })
     .catch((err) => console.error(err));
 }
+
+/* Sélect la class voulu puis séléct tout les input
+puis pour chaque input on vérifit si les champs sont vide 
+et on retourne une alert et true 
+Sinon on ne fait rien et retourne faut  */
 
 function valideFrom() {
   const form = document.querySelector('.cart__order__form');
@@ -227,6 +303,11 @@ function valideFrom() {
   });
 }
 
+/*On s'électionne l'id email avec sa valeur 
+Puis vérifie si l'email respect la regex 
+Si elle repect pas fait apparaitre une alerte 
+Sinon ne fait rien*/
+
 function isEmailValide() {
   const email = document.querySelector('#email').value;
   const regx = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
@@ -237,6 +318,10 @@ function isEmailValide() {
   return false;
 }
 
+/* Sélectionne la classe voulu puis définit
+ les constantes contenant les infos du form
+ Puis products prend la function 
+ */
 function makeRequestBody() {
   const form = document.querySelector('.cart__order__form');
   const firstName = form.elements.firstName.value;
@@ -256,6 +341,17 @@ function makeRequestBody() {
   };
   return body;
 }
+
+/*la const vaut la taille du localStorage 
+const ids = tableau
+Pour i = 0  i inférieur à numberOfProducts    i prend +1
+const key retourne localStorage.lenomdelaclef
+la const id = const key.split '-'[0] qui veut dire :
+sépare les 2 string ou il y a le -
+
+Puis pousse les éléments de le array 
+et return ids
+ */
 
 function getIdFromCache() {
   const numberOfProducts = localStorage.length;
