@@ -171,7 +171,7 @@ function addQuantityToSettings(settings, item) {
   input.max = Number('100');
   input.value = item.quantity;
   input.addEventListener('input', () =>
-    updatePriceAndQuantity(item.id, input.value, item)
+    updatePriceAndQuantity(item.id, input.value, item, item.color)
   );
 
   quantity.appendChild(input);
@@ -183,9 +183,6 @@ function inputMaxMin() {
   for (i = 0; i < inputSelector.length; i++) {
     if (inputSelector[i].value > 100) inputSelector[i].value = 100;
     else if (inputSelector[i].value < 0) inputSelector[i].value = 0;
-
-    let inputMaxMinNew = inputSelector[i].value;
-    console.log(inputMaxMinNew);
   }
 }
 for (i = 0; i < inputSelector.length; i++) {
@@ -196,8 +193,14 @@ for (i = 0; i < inputSelector.length; i++) {
 Puis on met à jour la nouvelle valeur en nombre 
 Et on lance les function avec les nouvelles valeur plus la save  */
 
-function updatePriceAndQuantity(id, newValue, item) {
-  const itemToUpdate = cart.find((item) => item.id === id);
+function updatePriceAndQuantity(id, newValue, item, color) {
+  console.log(cart);
+
+  console.log(item.color + item.id);
+  const itemToUpdate = cart.find(
+    (item) => item.id === id && item.color === color
+  );
+  console.log(itemToUpdate);
   itemToUpdate.quantity = Number(newValue);
   item.quantity = itemToUpdate.quantity;
   displayTotalQuantity(item);
@@ -379,7 +382,6 @@ Pour i = 0  i inférieur à numberOfProducts    i prend +1
 const key retourne localStorage.lenomdelaclef
 la const id = const key.split '-'[0] qui veut dire :
 sépare les 2 string ou il y a le -
-
 Puis pousse les éléments de le array 
 et return ids
  */
