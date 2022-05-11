@@ -53,12 +53,30 @@ function displayTotalQuantity(item) {
 
 function displayTotalPrice(item) {
   const totalPrice = document.querySelector('#totalPrice');
-  let total = 0;
+  let total = 0,
+    price = 0;
   totalPrice.textContent = item.quantity;
+
   cart.forEach((kanap) => {
-    const totalUnitPrice = kanap.price * kanap.quantity;
-    total += totalUnitPrice;
-    totalPrice.textContent = total;
+    // appel api recup price
+
+    fetch(`http://localhost:3000/api/products/${kanap.id}`, {
+      method: 'GET',
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        price = Number(data.price);
+        makeDescription(item, price);
+        // data.key > data.price + '€'
+
+        document.getElementById(item.id + '-' + item.color).innerText =
+          data.price + ' €';
+        const totalUnitPrice = price * kanap.quantity;
+
+        total += totalUnitPrice;
+        totalPrice.textContent = total;
+      })
+      .catch((err) => console.error(err));
   });
 }
 
@@ -149,14 +167,29 @@ function addQuantityToSettings(settings, item) {
   input.type = 'number';
   input.classList.add('itemQuantity');
   input.name = 'itemQuantity';
-  input.min = '1';
-  input.max = '100';
+  input.min = Number('1');
+  input.max = Number('100');
   input.value = item.quantity;
   input.addEventListener('input', () =>
     updatePriceAndQuantity(item.id, input.value, item)
   );
+
   quantity.appendChild(input);
   settings.appendChild(quantity);
+}
+
+const inputSelector = document.getElementsByClassName('itemQuantity');
+function inputMaxMin() {
+  for (i = 0; i < inputSelector.length; i++) {
+    if (inputSelector[i].value > 100) inputSelector[i].value = 100;
+    else if (inputSelector[i].value < 0) inputSelector[i].value = 0;
+
+    let inputMaxMinNew = inputSelector[i].value;
+    console.log(inputMaxMinNew);
+  }
+}
+for (i = 0; i < inputSelector.length; i++) {
+  inputSelector[i].addEventListener('keyup', inputMaxMin);
 }
 
 /* on va chercher dan le tableau item avec l'id voulu 
@@ -167,8 +200,8 @@ function updatePriceAndQuantity(id, newValue, item) {
   const itemToUpdate = cart.find((item) => item.id === id);
   itemToUpdate.quantity = Number(newValue);
   item.quantity = itemToUpdate.quantity;
-  displayTotalQuantity(newValue);
-  displayTotalPrice(newValue);
+  displayTotalQuantity(item);
+  displayTotalPrice(item);
   saveNewDataToCache(item);
 }
 
@@ -194,8 +227,10 @@ function makeDescription(item) {
   h2.textContent = item.name;
   const p = document.createElement('p');
   p.textContent = item.color;
+  // html : p id="key"
   const p2 = document.createElement('p');
-  p2.textContent = item.price + ' €';
+  p2.id = item.id + '-' + item.color;
+  p2.textContent = 'price' + ' €';
 
   description.appendChild(h2);
   description.appendChild(p);
@@ -276,12 +311,8 @@ function submitForm(e) {
   Qui permet d'envoyer vers la page confirm avec le bon id de commande */
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
       const orderId = data.orderId;
-      window.location.href =
-        '/P5-Dev-Web-Kanap/front/html/confirmation.html' +
-        '?orderId=' +
-        orderId;
+      window.location.href = 'confirmation.html' + '?orderId=' + orderId;
     })
     .catch((err) => console.error(err));
 }

@@ -79,19 +79,26 @@ const button = document.querySelector('#addToCart');
 // On écoute le click sur le bouton / si la couleur ou la quantité est null une alert pop
 button.addEventListener('click', (e) => {
   const color = document.querySelector('#colors').value;
-  const quantity = document.querySelector('#quantity').value;
+  let quantity = Number(document.querySelector('#quantity').value);
   if (color == null || color === '' || quantity == null || quantity == 0) {
     alert('Selectionner une couleur et une quantité ');
     return;
   }
 
   const key = `${id}-${color}`;
+
+  let item = JSON.parse(localStorage.getItem(key));
+
+  if (item) {
+    quantity += item.quantity;
+  }
+
   // définition const storage qui stock tout le contenu nécessaire
   const storage = {
     id: id,
     color: color,
     quantity: Number(quantity),
-    price: kanapPrice,
+
     imageUrl: imgUrl,
     altTxt: altText,
     name: articleName,
@@ -100,4 +107,11 @@ button.addEventListener('click', (e) => {
   localStorage.setItem(key, JSON.stringify(storage));
   //ça nous redirige sur le panier après le click
   window.location.href = 'cart.html';
+});
+
+document.getElementById('quantity').addEventListener('keyup', function (event) {
+  if (document.getElementById('quantity').value > 100)
+    document.getElementById('quantity').value = 100;
+  else if (document.getElementById('quantity').value < 0)
+    document.getElementById('quantity').value = 0;
 });
