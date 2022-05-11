@@ -296,6 +296,8 @@ function submitForm(e) {
   }
   if (valideFrom()) return;
   if (isEmailValide()) return;
+  if (isFirstNameValide()) return;
+  if (isNameValide()) return;
 
   // On appel la function
   const body = makeRequestBody();
@@ -347,6 +349,24 @@ function isEmailValide() {
   const regx = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
   if (regx.test(email) === false) {
     alert('Veuiller entré une adresse mail valide !');
+    return true;
+  }
+  return false;
+}
+function isFirstNameValide() {
+  const firstName = document.querySelector('#firstName').value;
+  const regx = /([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+$/;
+  if (regx.test(firstName) === false) {
+    alert('Veuiller entré un Prénom valide !');
+    return true;
+  }
+  return false;
+}
+function isNameValide() {
+  const Name = document.querySelector('#lastName').value;
+  const regx = /([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+$/;
+  if (regx.test(Name) === false) {
+    alert('Veuiller entré un Nom valide !');
     return true;
   }
   return false;
