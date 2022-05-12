@@ -139,6 +139,7 @@ function deleteArticleFromPage(item) {
     `article[data-id="${item.id}"][data-color="${item.color}"]`
   );
   articleToDelete.remove(item);
+  window.location.href = 'cart.html';
 }
 
 //sélectionne dans le cache un item avec la bonne id et couleur puis le supprime
