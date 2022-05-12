@@ -1,39 +1,62 @@
-//Création constante url de l'API
-const url = 'http://localhost:3000/api/products';
-
-// On prend le contenu de l'API en format JSON
-fetch(url)
+//Appel API GET
+fetch('http://localhost:3000/api/products')
   .then((res) => res.json())
+  .then((data) => addProducts(data));
 
-  // On prend les éléments dans un tableau
-  .then((objetProduits) => {
-    // On appel la function kanap avec comme paramètre objetProduits
-    lesKanaps(objetProduits);
-  })
-  // On définit une action si il y a une erreur avec l'API
-  .catch((err) => {
-    document.querySelector('.titles').innerHTML = '<h1>erreur 404</h1>';
-    console.log('erreur 404, sur ressource api:' + err);
+//  Joues les function créatrice pour chaque kanap puis les donnes en enfant
+function addProducts(kanap) {
+  kanap.forEach((kanap) => {
+    const { _id, imageUrl, altTxt, name, description } = kanap;
+    const anchor = makeAnchor(_id);
+    const article = document.createElement('article');
+    const image = makeImageDiv(imageUrl, altTxt);
+    const h3 = makeH3(name);
+    const p = makeParagraph(description);
+
+    appendElementsToArticle(article, [image, h3, p]);
+    appendArticleToAnchor(anchor, article);
   });
-
-// On déclare la function lesKanaps avec comme paramètre index
-function lesKanaps(index) {
-  /* On définit la variable zoneArticle du paramètre index qui est égal à 
-  la séléction de l'ID #items */
-  let zoneArticle = document.querySelector('#items');
-
-  /* On déclare la boucle avec la variable article du paramètre index qui ajoute 
-  dans le html les produits*/
-  // on déclare article de l'index qui est le paramètre de lesKanaps
-  for (let article of index) {
-    // On ajoute dans la zoneArticle + le contenu des kanaps
-
-    zoneArticle.innerHTML += `<a href="./product.html?_id=${article._id}">
-    <article> 
-    <img src="${article.imageUrl}" alt="${article.altTxt}">
-    <h3 class="productName">${article.name}</h3>
-    <p class="productDescription">${article.description}</p>
-    </article>
-    </a>`;
+}
+//Donne en enfant les items a article
+function appendElementsToArticle(article, array) {
+  array.forEach((item) => {
+    article.appendChild(item);
+  });
+}
+// Fabrique un <a> puis lui donne comme href './product.html?_id=' + id;
+function makeAnchor(id) {
+  const anchor = document.createElement('a');
+  anchor.href = './product.html?_id=' + id;
+  return anchor;
+}
+//Sélectionne #items dans le DOM puis si items est différent de null les donne en enfant
+function appendArticleToAnchor(anchor, article) {
+  const items = document.querySelector('#items');
+  if (items != null) {
+    items.appendChild(anchor);
+    anchor.appendChild(article);
   }
+}
+//Fabrique img avec src et alt et enlève les attribut titre et syle
+function makeImageDiv(imageUrl, altTxt) {
+  const image = document.createElement('img');
+  image.src = imageUrl;
+  image.alt = altTxt;
+  image.removeAttribute('title');
+  image.removeAttribute('style');
+  return image;
+}
+//Fabrique un h3 avec name en textcontent puis ajoute une classe
+function makeH3(name) {
+  const h3 = document.createElement('h3');
+  h3.textContent = name;
+  h3.classList.add('productName');
+  return h3;
+}
+//Fabrique un p avec une description et ajoute une classe
+function makeParagraph(description) {
+  const p = document.createElement('p');
+  p.textContent = description;
+  p.classList.add('productDescription');
+  return p;
 }
