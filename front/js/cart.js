@@ -66,15 +66,13 @@ function displayTotalPrice(item) {
       .then((res) => res.json())
       .then((data) => {
         price = Number(data.price);
-        makeDescription(item, price);
         // data.key > data.price + '€'
 
-        document.getElementById(item.id + '-' + item.color).innerText =
-          data.price + ' €';
         const totalUnitPrice = price * kanap.quantity;
 
         total += totalUnitPrice;
         totalPrice.textContent = total;
+        makeDescription(item, price);
       })
       .catch((err) => console.error(err));
   });
@@ -195,17 +193,14 @@ Puis on met à jour la nouvelle valeur en nombre
 Et on lance les function avec les nouvelles valeur plus la save  */
 
 function updatePriceAndQuantity(id, newValue, item, color) {
-  console.log(cart);
-
-  console.log(item.color + item.id);
   const itemToUpdate = cart.find(
     (item) => item.id === id && item.color === color
   );
-  console.log(itemToUpdate);
+
   itemToUpdate.quantity = Number(newValue);
   item.quantity = itemToUpdate.quantity;
-  displayTotalQuantity(item);
-  displayTotalPrice(item);
+  displayTotalQuantity(item.quantity);
+  displayTotalPrice(item.quantity);
   saveNewDataToCache(item);
 }
 
@@ -234,7 +229,23 @@ function makeDescription(item) {
   // html : p id="key"
   const p2 = document.createElement('p');
   p2.id = item.id + '-' + item.color;
-  p2.textContent = 'price' + ' €';
+
+  // appel api recup price
+
+  fetch(`http://localhost:3000/api/products/${item.id}`, {
+    method: 'GET',
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      price = Number(data.price);
+
+      // data.key > data.price + '€'
+
+      document.getElementById(item.id + '-' + item.color).textContent =
+        data.price + ' €';
+    })
+
+    .catch((err) => console.error(err));
 
   description.appendChild(h2);
   description.appendChild(p);
