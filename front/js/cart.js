@@ -199,8 +199,8 @@ function updatePriceAndQuantity(id, newValue, item, color) {
 
   itemToUpdate.quantity = Number(newValue);
   item.quantity = itemToUpdate.quantity;
-  displayTotalQuantity(item.quantity);
-  displayTotalPrice(item.quantity);
+  displayTotalQuantity(item);
+  displayTotalPrice(item);
   saveNewDataToCache(item);
 }
 
@@ -219,6 +219,7 @@ Puis un p contenant color puis un p2 contenant le prix
 Et on les rends enfant de description (la div) */
 
 function makeDescription(item) {
+  console.log(item);
   const description = document.createElement('div');
   description.classList.add('cart__item__content__description');
 
@@ -243,9 +244,9 @@ function makeDescription(item) {
 
       document.getElementById(item.id + '-' + item.color).textContent =
         data.price + ' €';
-    })
+    });
 
-    .catch((err) => console.error(err));
+  // .catch((err) => console.error(err));
 
   description.appendChild(h2);
   description.appendChild(p);
