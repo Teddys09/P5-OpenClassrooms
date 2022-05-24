@@ -219,7 +219,6 @@ Puis un p contenant color puis un p2 contenant le prix
 Et on les rends enfant de description (la div) */
 
 function makeDescription(item) {
-  console.log(item);
   const description = document.createElement('div');
   description.classList.add('cart__item__content__description');
 
