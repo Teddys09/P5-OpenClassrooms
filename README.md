@@ -12,7 +12,7 @@ Then add them to the cart and display the total price.
 
 Finally when user validate cart i format all the data and send it to the API !
 
-### Install the project
+## Install the project
 Clone this repo.
 
 ## Back
